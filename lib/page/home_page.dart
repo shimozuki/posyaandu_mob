@@ -2,7 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:posyandu/controller/controller_banner.dart';
+import 'package:posyandu/controller/controller_list.dart';
 import 'package:posyandu/layout/footerbar.dart';
+import 'package:posyandu/model/model_banner.dart';
+import 'package:posyandu/model/model_list.dart';
 
 final List<String> imgList = [
   'https://images.unsplash.com/photo-1520342868574-5fa3804e551c?ixlib=rb-0.3.5&ixid=eyJhcHBfaWQiOjEyMDd9&s=6ff92caffcdd63681a35134a6770ed3b&auto=format&fit=crop&w=1951&q=80',
@@ -31,73 +35,6 @@ final List<String> textList = [
   'Informasi kesehatan bayi dan ibu hamil mengkonsumsi 6',
 ];
 
-List<Widget> get imageSliders {
-  return imgList
-      .asMap()
-      .entries
-      .map((entry) => Column(
-            children: [
-              Container(
-                margin: EdgeInsets.only(top: 12.0),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(25),
-                ),
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(25),
-                  child: Image.network(
-                    entry.value,
-                    fit: BoxFit.cover,
-                    width: double.infinity,
-                  ),
-                ),
-              ),
-              SizedBox(height: 12.1),
-              Container(
-                margin: EdgeInsets.fromLTRB(10, 0, 24.7, 8),
-                child: Text(
-                  textList[entry.key],
-                  style: GoogleFonts.mulish(
-                    fontWeight: FontWeight.w500,
-                    fontSize: 14,
-                    color: Color(0xFF191C32),
-                  ),
-                ),
-              ),
-              Container(
-                margin: EdgeInsets.fromLTRB(10, 0, 24.7, 8),
-                child: Align(
-                  alignment: Alignment.topLeft,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Container(
-                        margin: EdgeInsets.fromLTRB(0, 0, 12.6, 4.1),
-                        width: 13.9,
-                        height: 12.9,
-                        child: Icon(
-                          Icons.access_time,
-                          color: Color.fromARGB(255, 118, 118, 120),
-                          size: 23,
-                        ),
-                      ),
-                      Text(
-                        '3 days ago',
-                        style: GoogleFonts.mulish(
-                          fontWeight: FontWeight.w500,
-                          fontSize: 14,
-                          color: Color.fromARGB(255, 92, 92, 93),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ],
-          ))
-      .toList();
-}
-
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key});
 
@@ -109,6 +46,113 @@ class _MyHomePageState extends State<MyHomePage> {
   final CarouselController _controller = CarouselController();
   int selectedTabIndex = 0;
   int _selectedIndex = 0;
+  List<CustomBanner> banners = [];
+  List<ListItem> listItems = [];
+  bool isLoading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    fetchBanners();
+    fetchListItems();
+  }
+
+  void fetchListItems() async {
+    try {
+      List<ListItem> fetchedItems = await ListController().fetchListItems();
+      setState(() {
+        listItems = fetchedItems;
+        isLoading = false;
+      });
+    } catch (e) {
+      setState(() {
+        isLoading = false;
+      });
+      // Handle error
+    }
+  }
+
+  void fetchBanners() async {
+    try {
+      List<CustomBanner> fetchedBanners =
+          await CustomBannerController().fetchBanners();
+      setState(() {
+        banners = fetchedBanners;
+        isLoading = false;
+      });
+    } catch (e) {
+      setState(() {
+        isLoading = false;
+      });
+      // Handle error
+    }
+  }
+
+  List<Widget> get imageSliders {
+    return banners
+        .map((banner) => Column(
+              children: [
+                Container(
+                  margin: EdgeInsets.only(top: 12.0),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(25),
+                  ),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(25),
+                    child: Image.network(
+                      'https://posyandulontoengal.xyz/storage/${banner.image}',
+                      fit: BoxFit.cover,
+                      width: double.infinity,
+                    ),
+                  ),
+                ),
+                SizedBox(height: 12.1),
+                Container(
+                  margin: EdgeInsets.fromLTRB(10, 0, 24.7, 8),
+                  child: Text(
+                    banner.judul,
+                    style: GoogleFonts.mulish(
+                      fontWeight: FontWeight.w500,
+                      fontSize: 14,
+                      color: Color(0xFF191C32),
+                    ),
+                  ),
+                ),
+                Container(
+                  margin: EdgeInsets.fromLTRB(10, 0, 24.7, 8),
+                  child: Align(
+                    alignment: Alignment.topLeft,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Container(
+                          margin: EdgeInsets.fromLTRB(0, 0, 12.6, 4.1),
+                          width: 13.9,
+                          height: 12.9,
+                          child: Icon(
+                            Icons.access_time,
+                            color: Color.fromARGB(255, 118, 118, 120),
+                            size: 23,
+                          ),
+                        ),
+                        Text(
+                          // Assuming you have a createdAt field
+                          '1 minuts', // You may calculate the exact time difference
+                          style: GoogleFonts.mulish(
+                            fontWeight: FontWeight.w500,
+                            fontSize: 14,
+                            color: Color.fromARGB(255, 92, 92, 93),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
+            ))
+        .toList();
+  }
 
   void _onTabTapped(int index) {
     setState(() {
@@ -134,118 +178,64 @@ class _MyHomePageState extends State<MyHomePage> {
             ),
           ),
         ),
-        body: SingleChildScrollView(
-          child: Container(
-            width: double.infinity,
-            height: MediaQuery.of(context).size.height * 1.1,
-            decoration: BoxDecoration(
-              color: Color(0xffffffff),
-            ),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Container(
-                  margin: EdgeInsets.only(top: 22.0),
-                  child: CarouselSlider(
-                    items: imageSliders,
-                    carouselController: _controller,
-                    options: CarouselOptions(
-                      height: 350, // Adjusted height to accommodate text
-                      autoPlayInterval: const Duration(seconds: 3),
-                      autoPlayAnimationDuration:
-                          const Duration(milliseconds: 800),
-                      enlargeCenterPage: true,
-                      aspectRatio: 2.0,
-                      autoPlayCurve: Curves.fastOutSlowIn,
-                      pauseAutoPlayOnTouch: true,
-                      viewportFraction: 0.90,
-                    ),
+        body: isLoading
+            ? Center(child: CircularProgressIndicator())
+            : SingleChildScrollView(
+                child: Container(
+                  width: double.infinity,
+                  height: MediaQuery.of(context).size.height * 1.1,
+                  decoration: BoxDecoration(
+                    color: Color(0xffffffff),
                   ),
-                ),
-                Container(
-                  margin: EdgeInsets.fromLTRB(15, 0, 15, 17),
-                  child: Align(
-                    alignment: Alignment.topLeft,
-                    child: SizedBox(
-                      width: 319,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Container(
-                                margin: EdgeInsets.fromLTRB(0, 0, 7, 0),
-                                child: SizedBox(
-                                  width: 47,
-                                  height: 46,
-                                  child: Image.asset(
-                                      'assets/icons/stethoscope.png'),
-                                ),
-                              ),
-                              Container(
-                                margin: EdgeInsets.fromLTRB(0, 8, 0, 7),
-                                child: Text(
-                                  'Tips Kesehatan',
-                                  style: GoogleFonts.mulish(
-                                    fontWeight: FontWeight.w500,
-                                    fontSize: 14,
-                                    color: Color(0xFF191C32),
-                                  ),
-                                ),
-                              ),
-                            ],
-                          )
-                        ],
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Container(
+                        margin: EdgeInsets.only(top: 22.0),
+                        child: CarouselSlider(
+                          items: imageSliders,
+                          carouselController: _controller,
+                          options: CarouselOptions(
+                            height: 350, // Adjusted height to accommodate text
+                            autoPlayInterval: const Duration(seconds: 3),
+                            autoPlayAnimationDuration:
+                                const Duration(milliseconds: 800),
+                            enlargeCenterPage: true,
+                            aspectRatio: 2.0,
+                            autoPlayCurve: Curves.fastOutSlowIn,
+                            pauseAutoPlayOnTouch: true,
+                            viewportFraction: 0.90,
+                          ),
+                        ),
                       ),
-                    ),
-                  ),
-                ),
-                Expanded(
-                  child: ListView.builder(
-                    itemCount: imginfo.length,
-                    itemBuilder: (context, index) {
-                      return Container(
-                        margin: EdgeInsets.fromLTRB(9, 0, 9, 20),
+                      Container(
+                        margin: EdgeInsets.fromLTRB(15, 0, 15, 17),
                         child: Align(
                           alignment: Alignment.topLeft,
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Container(
-                                margin: EdgeInsets.fromLTRB(0, 0, 20, 0),
-                                width: 110,
-                                height: 110,
-                                child: Container(
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(25),
-                                    color: Color(0xFF9F9DF3),
-                                  ),
-                                  child: ClipRRect(
-                                    borderRadius: BorderRadius.circular(25),
-                                    child: Image.network(
-                                      imginfo[index],
-                                      fit: BoxFit.cover,
-                                      width: 110,
-                                      height: 110,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                              Container(
-                                margin: EdgeInsets.fromLTRB(0, 7, 0, 7),
-                                child: Column(
+                          child: SizedBox(
+                            width: 319,
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Row(
                                   mainAxisAlignment: MainAxisAlignment.start,
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Container(
-                                      margin: EdgeInsets.fromLTRB(0, 0, 0, 12),
+                                      margin: EdgeInsets.fromLTRB(0, 0, 7, 0),
+                                      child: SizedBox(
+                                        width: 47,
+                                        height: 46,
+                                        child: Image.asset(
+                                            'assets/icons/stethoscope.png'),
+                                      ),
+                                    ),
+                                    Container(
+                                      margin: EdgeInsets.fromLTRB(0, 8, 0, 7),
                                       child: Text(
-                                        'Participate in the Corra \nFinance Airdrop \non CoinMarketCap',
+                                        'Tips Kesehatan',
                                         style: GoogleFonts.mulish(
                                           fontWeight: FontWeight.w500,
                                           fontSize: 14,
@@ -253,58 +243,137 @@ class _MyHomePageState extends State<MyHomePage> {
                                         ),
                                       ),
                                     ),
+                                  ],
+                                )
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                      Expanded(
+                        child: ListView.builder(
+                          itemCount: listItems.length,
+                          itemBuilder: (context, index) {
+                            return Container(
+                              margin: EdgeInsets.fromLTRB(9, 0, 9, 20),
+                              child: Align(
+                                alignment: Alignment.topLeft,
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
                                     Container(
-                                      margin:
-                                          EdgeInsets.fromLTRB(1.6, 0, 1.6, 0),
-                                      child: Align(
-                                        alignment: Alignment.topLeft,
-                                        child: Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.start,
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            Container(
-                                              margin: EdgeInsets.fromLTRB(
-                                                  0, 3.1, 11.6, 4.1),
-                                              width: 13.9,
-                                              height: 13.9,
-                                              child: SizedBox(
-                                                width: 13.9,
-                                                height: 13.9,
-                                                child: Icon(
-                                                  Icons.circle,
-                                                  size: 13.9,
-                                                  color: Color(0xFF9395A4),
-                                                ),
-                                              ),
-                                            ),
-                                            Text(
-                                              '3 days ago',
-                                              style: GoogleFonts.mulish(
-                                                fontWeight: FontWeight.w500,
-                                                fontSize: 14,
-                                                color: Color(0xFF9395A4),
-                                              ),
-                                            ),
-                                          ],
+                                      margin: EdgeInsets.fromLTRB(0, 0, 20, 0),
+                                      width: 110,
+                                      height: 110,
+                                      child: Container(
+                                        decoration: BoxDecoration(
+                                          borderRadius:
+                                              BorderRadius.circular(25),
+                                          color: Color(0xFF9F9DF3),
                                         ),
+                                        child: ClipRRect(
+                                          borderRadius:
+                                              BorderRadius.circular(25),
+                                          child: Image.network(
+                                            '${listItems[index].image}',
+                                            fit: BoxFit.cover,
+                                            width: 110,
+                                            height: 110,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                    Container(
+                                      margin: EdgeInsets.fromLTRB(0, 7, 0, 7),
+                                      child: Column(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.start,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Container(
+                                            margin: EdgeInsets.fromLTRB(
+                                                0, 0, 0, 12),
+                                            child: RichText(
+                                              text: TextSpan(
+                                                style: GoogleFonts.mulish(
+                                                  fontWeight: FontWeight.w500,
+                                                  fontSize: 14,
+                                                  color: Color(0xFF191C32),
+                                                ),
+                                                children: <TextSpan>[
+                                                  TextSpan(
+                                                      text: listItems[index]
+                                                          .judul
+                                                          .split(' ')
+                                                          .take(3)
+                                                          .join(' ')),
+                                                  TextSpan(text: '\n'),
+                                                  TextSpan(
+                                                      text: listItems[index]
+                                                          .judul
+                                                          .split(' ')
+                                                          .skip(3)
+                                                          .join(' ')),
+                                                ],
+                                              ),
+                                            ),
+                                          ),
+                                          Container(
+                                            margin: EdgeInsets.fromLTRB(
+                                                1.6, 0, 1.6, 0),
+                                            child: Align(
+                                              alignment: Alignment.topLeft,
+                                              child: Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.start,
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                children: [
+                                                  Container(
+                                                    margin: EdgeInsets.fromLTRB(
+                                                        0, 3.1, 11.6, 4.1),
+                                                    width: 13.9,
+                                                    height: 13.9,
+                                                    child: SizedBox(
+                                                      width: 13.9,
+                                                      height: 13.9,
+                                                      child: Icon(
+                                                        Icons.circle,
+                                                        size: 13.9,
+                                                        color:
+                                                            Color(0xFF9395A4),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  Text(
+                                                    '3 days ago',
+                                                    style: GoogleFonts.mulish(
+                                                      fontWeight:
+                                                          FontWeight.w500,
+                                                      fontSize: 14,
+                                                      color: Color(0xFF9395A4),
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                          ),
+                                        ],
                                       ),
                                     ),
                                   ],
                                 ),
                               ),
-                            ],
-                          ),
+                            );
+                          },
                         ),
-                      );
-                    },
+                      ),
+                    ],
                   ),
                 ),
-              ],
-            ),
-          ),
-        ),
+              ),
         bottomNavigationBar: MyBottomNavigationBar(
           currentIndex: _selectedIndex,
           onTabTapped: _onTabTapped,
