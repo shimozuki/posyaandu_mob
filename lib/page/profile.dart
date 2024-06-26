@@ -23,10 +23,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
         MaterialPageRoute(builder: (context) => MyHomePage()),
       );
     } else if (_selectedIndex == 1) {
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => DashboardScreen()),
-      );
+      // Navigator.push(
+      //   context,
+      //   MaterialPageRoute(builder: (context) => DashboardScreen()),
+      // );
     } else if (_selectedIndex == 2) {
       Navigator.push(
         context,

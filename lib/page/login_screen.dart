@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:posyandu/controller/login_controller.dart';
 import 'package:posyandu/page/dashboard_page.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -10,6 +11,27 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+  final LoginController _loginController = LoginController();
+
+  void _login() async {
+    final email = _emailController.text;
+    final password = _passwordController.text;
+    final response = await _loginController.login(email, password);
+
+    if (response != null && response.message == "Login successful") {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => DashboardScreen(user: response.user),
+        ),
+      );
+    } else {
+      // Show error message
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Login failed')),
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -57,12 +79,7 @@ class _LoginScreenState extends State<LoginScreen> {
               SizedBox(height: 20),
               // Login Button
               ElevatedButton(
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => DashboardScreen()),
-                  ); // Add login logic here
-                },
+                onPressed: _login,
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Color(0xFFFFA4B6),
                   padding: EdgeInsets.symmetric(horizontal: 120, vertical: 10),

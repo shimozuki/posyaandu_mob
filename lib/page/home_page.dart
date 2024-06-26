@@ -161,10 +161,10 @@ class _MyHomePageState extends State<MyHomePage> {
     });
     if (_selectedIndex == 1) {
     } else if (_selectedIndex == 2) {
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => DashboardScreen()),
-      );
+      // Navigator.push(
+      //   context,
+      //   MaterialPageRoute(builder: (context) => DashboardScreen()),
+      // );
     } else if (_selectedIndex == 3) {
       Navigator.pushNamed(context, '/login');
     }

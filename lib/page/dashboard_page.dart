@@ -1,20 +1,46 @@
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:posyandu/controller/listAnak_controller.dart';
 import 'package:posyandu/layout/footerbar.dart';
+import 'package:posyandu/model/listAnak_model.dart';
+import 'package:posyandu/model/login_model.dart';
 
 class DashboardScreen extends StatefulWidget {
+  final User user;
+
+  DashboardScreen({required this.user});
   @override
   _DashboardScreenState createState() => _DashboardScreenState();
 }
 
 class _DashboardScreenState extends State<DashboardScreen> {
   int _selectedIndex = 0;
+  String selectedReport = 'Pilih Anak';
+  List<Anak> anakList = [];
 
   void _onTabTapped(int index) {
     setState(() {
       _selectedIndex = index;
     });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    fetchAnakList();
+  }
+
+  void fetchAnakList() async {
+    ListAnakController controller = ListAnakController();
+    try {
+      List<Anak> fetchedList = await controller.fetchAnak(17);
+      setState(() {
+        anakList = fetchedList;
+      });
+    } catch (e) {
+      print("Failed to load children: $e");
+    }
   }
 
   @override
@@ -37,7 +63,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
                         Text("Posyandu Lonto Engal",
                             style: TextStyle(
                                 fontSize: 16, fontWeight: FontWeight.bold)),
-                        Text("Nama Anak", style: TextStyle(fontSize: 22)),
+                        Text('Hi, Bun ${widget.user.name}',
+                            style: TextStyle(fontSize: 22)),
                       ],
                     ),
                     CircleAvatar(
