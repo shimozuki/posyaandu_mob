@@ -325,7 +325,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                       _buildCard(
                           "Lingkar Kepala",
                           "${selectedChild!.layananAnak.last.lingkarkepala} Cm",
-                          Color.fromARGB(255, 197, 249, 201),
+                          Color.fromARGB(255, 246, 197, 249),
                           Icons.health_and_safety),
                     ],
                   ),
