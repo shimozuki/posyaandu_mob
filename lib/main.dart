@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:posyandu/page/login_screen.dart';
 import 'package:posyandu/page/splash_page.dart';
 
 void main() {
@@ -13,6 +14,9 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       home: Splash(),
+      routes: {
+        '/login': (context) => LoginScreen(),
+      },
     );
   }
 }

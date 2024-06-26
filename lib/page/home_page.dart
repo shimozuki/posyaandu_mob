@@ -7,6 +7,7 @@ import 'package:posyandu/controller/controller_list.dart';
 import 'package:posyandu/layout/footerbar.dart';
 import 'package:posyandu/model/model_banner.dart';
 import 'package:posyandu/model/model_list.dart';
+import 'package:posyandu/page/dashboard_page.dart';
 
 final List<String> imgList = [
   'https://images.unsplash.com/photo-1520342868574-5fa3804e551c?ixlib=rb-0.3.5&ixid=eyJhcHBfaWQiOjEyMDd9&s=6ff92caffcdd63681a35134a6770ed3b&auto=format&fit=crop&w=1951&q=80',
@@ -159,7 +160,14 @@ class _MyHomePageState extends State<MyHomePage> {
       _selectedIndex = index;
     });
     if (_selectedIndex == 1) {
-    } else if (_selectedIndex == 2) {}
+    } else if (_selectedIndex == 2) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => DashboardScreen()),
+      );
+    } else if (_selectedIndex == 3) {
+      Navigator.pushNamed(context, '/login');
+    }
   }
 
   @override
