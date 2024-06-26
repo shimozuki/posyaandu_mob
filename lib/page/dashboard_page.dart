@@ -18,9 +18,10 @@ class DashboardScreen extends StatefulWidget {
 
 class _DashboardScreenState extends State<DashboardScreen> {
   int _selectedIndex = 0;
-  String selectedReport = 'Pilih Anak'; // Initial value for dropdown
+  String? selectedReport; // Initial value for dropdown
   List<ChildModel> children = [];
   List<JadwalModel> jadwals = [];
+  ChildModel? selectedChild;
 
   void _onTabTapped(int index) {
     setState(() {
@@ -97,40 +98,38 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     enabledBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(30.0),
                       borderSide: BorderSide(
-                        color: Colors.grey, // Warna garis saat tidak fokus
-                        width: 1.0, // Ketebalan garis
+                        color: Colors.grey,
+                        width: 1.0,
                       ),
                     ),
                     focusedBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(30.0),
                       borderSide: BorderSide(
-                        color: Colors.grey, // Warna garis saat fokus
-                        width: 1.0, // Ketebalan garis
+                        color: Colors.grey,
+                        width: 1.0,
                       ),
                     ),
                     errorBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(30.0),
                       borderSide: BorderSide(
-                        color: Colors.red, // Warna garis saat ada error
-                        width: 1.0, // Ketebalan garis
+                        color: Colors.red,
+                        width: 1.0,
                       ),
                     ),
                     focusedErrorBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(30.0),
                       borderSide: BorderSide(
-                        color:
-                            Colors.red, // Warna garis saat fokus dan ada error
-                        width: 1.0, // Ketebalan garis
+                        color: Colors.red,
+                        width: 1.0,
                       ),
                     ),
                     filled: true,
-                    fillColor: Colors.transparent, // Latar belakang transparan
+                    fillColor: Colors.transparent,
                   ),
                   isExpanded: true,
                   items: [
                     'Pilih Anak',
-                    for (var child in children)
-                      '${child.name}' // Customize this as per your requirement
+                    for (var child in children) child.name,
                   ].map<DropdownMenuItem<String>>((String value) {
                     return DropdownMenuItem<String>(
                       value: value,
@@ -147,6 +146,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   onChanged: (String? newValue) {
                     setState(() {
                       selectedReport = newValue!;
+                      selectedChild = children
+                          .firstWhere((child) => child.name == newValue);
                     });
                   },
                 ),
@@ -245,70 +246,89 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   }).toList(),
                 ),
                 SizedBox(height: 20),
-                Container(
-                  width: 350,
-                  height: 145, // Set lebar sesuai keinginan
-                  padding: EdgeInsets.all(16.0),
-                  decoration: BoxDecoration(
-                    color: Colors.blue[200],
-                    borderRadius: BorderRadius.circular(10),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black26,
-                        blurRadius: 10.0,
-                        offset: Offset(0, 5),
-                      ),
-                    ],
-                  ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        'Usia Anak',
-                        style: TextStyle(
-                          fontSize: 16.0,
-                          color: Colors.black,
-                          fontWeight: FontWeight.bold,
+                if (selectedChild != null)
+                  Container(
+                    width: 350,
+                    height: 145, // Set lebar sesuai keinginan
+                    padding: EdgeInsets.all(16.0),
+                    decoration: BoxDecoration(
+                      color: Colors.blue[200],
+                      borderRadius: BorderRadius.circular(10),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black26,
+                          blurRadius: 10.0,
+                          offset: Offset(0, 5),
                         ),
-                      ),
-                      SizedBox(height: 8.0),
-                      Row(
-                        children: [
-                          Text(
-                            '20',
-                            style: TextStyle(
-                              fontSize: 48.0,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.black,
-                            ),
+                      ],
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Usia Anak',
+                          style: TextStyle(
+                            fontSize: 16.0,
+                            color: Colors.black,
+                            fontWeight: FontWeight.bold,
                           ),
-                          SizedBox(width: 8.0),
-                          Text(
-                            'Tahun',
-                            style: TextStyle(
-                              fontSize: 16.0,
-                              color: Colors.black,
+                        ),
+                        SizedBox(height: 8.0),
+                        Row(
+                          children: [
+                            Text(
+                              '${selectedChild!.umur}',
+                              style: TextStyle(
+                                fontSize: 48.0,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.black,
+                              ),
                             ),
-                          ),
-                        ],
-                      ),
-                    ],
+                            SizedBox(width: 8.0),
+                            Text(
+                              'Tahun',
+                              style: TextStyle(
+                                fontSize: 16.0,
+                                color: Colors.black,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
                   ),
-                ),
                 SizedBox(height: 20),
                 // Child's Details
-                GridView.count(
-                  crossAxisCount: 2,
-                  shrinkWrap: true,
-                  physics: NeverScrollableScrollPhysics(),
-                  children: [
-                    _buildCard("Usia Anak", "20 Tahun", Colors.blueAccent),
-                    _buildCard("Imunisasi Ke", "2", Colors.pinkAccent),
-                    _buildCard("Gizi Anak", "Normal", Colors.amberAccent),
-                    _buildCard("Berat Badan", "2 Kg", Colors.lightBlueAccent),
-                    _buildCard("Tinggi Badan", "100 Cm", Colors.purpleAccent),
-                  ],
-                ),
+                if (selectedChild != null)
+                  GridView.count(
+                    crossAxisCount: 2,
+                    shrinkWrap: true,
+                    physics: NeverScrollableScrollPhysics(),
+                    children: [
+                      _buildCard(
+                          "Imunisasi Ke",
+                          "${selectedChild!.imunCount}",
+                          Color.fromARGB(255, 252, 182, 196),
+                          Icons.local_hospital),
+                      _buildCard("Gizi Anak", "Normal",
+                          Color.fromARGB(255, 252, 233, 184), Icons.person),
+                      _buildCard(
+                          "Berat Badan",
+                          "${selectedChild!.layananAnak.last.beratBadan} Kg",
+                          Color.fromARGB(255, 174, 226, 250),
+                          Icons.balance),
+                      _buildCard(
+                          "Tinggi Badan",
+                          "${selectedChild!.layananAnak.last.tinggiBadan} Cm",
+                          Color.fromARGB(255, 197, 249, 201),
+                          Icons.height),
+                      _buildCard(
+                          "Lingkar Kepala",
+                          "${selectedChild!.layananAnak.last.lingkarkepala} Cm",
+                          Color.fromARGB(255, 197, 249, 201),
+                          Icons.health_and_safety),
+                    ],
+                  ),
               ],
             ),
           ),
@@ -321,18 +341,23 @@ class _DashboardScreenState extends State<DashboardScreen> {
     );
   }
 
-  Widget _buildCard(String title, String value, Color color) {
+  Widget _buildCard(String title, String value, Color color, IconData icon) {
     return Card(
       color: color,
       child: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: EdgeInsets.fromLTRB(10, 0, 9, 0),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
+            Icon(icon, size: 40), // Atur ukuran ikon sesuai kebutuhan
+            SizedBox(height: 0), // Ubah jarak antar elemen sesuai kebutuhan
             Text(title,
-                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                style: GoogleFonts.cabin(
+                  fontWeight: FontWeight.w600,
+                  fontSize: 20,
+                )),
             SizedBox(height: 10),
-            Text(value, style: TextStyle(fontSize: 22)),
+            Text(value, style: TextStyle(fontSize: 35)),
           ],
         ),
       ),
