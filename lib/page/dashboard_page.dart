@@ -151,6 +151,20 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   },
                 ),
                 SizedBox(height: 20),
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      "Jadwal Posyandu",
+                      style: GoogleFonts.cabin(
+                        fontWeight: FontWeight.w400,
+                        fontSize: 19,
+                        color: Color(0xFF858597),
+                      ),
+                    ),
+                  ],
+                ),
+                SizedBox(height: 20),
                 // Carousel Slider
                 CarouselSlider(
                   options: CarouselOptions(
@@ -160,19 +174,126 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   ),
                   items: jadwals.map((jadwal) {
                     return Container(
-                      width: double.infinity,
-                      margin: EdgeInsets.symmetric(horizontal: 5.0),
+                      width: 490, // Set lebar sesuai keinginan
+                      height: 200, // Set tinggi sesuai keinginan
+                      padding: EdgeInsets.all(15.0),
                       decoration: BoxDecoration(
-                        color: Colors.pink,
+                        color: Colors.pink[100],
                         borderRadius: BorderRadius.circular(10),
                       ),
-                      child: Center(
-                          child: Text(
-                              "Jadwal Posyandu Bulan \nsuar 1 dan 2\n${jadwal.tanggal} 09.00 - 12.00",
-                              textAlign: TextAlign.center,
-                              style: TextStyle(color: Colors.white))),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            children: [
+                              Icon(Icons.calendar_today, color: Colors.white),
+                              SizedBox(width: 8.0),
+                              Text(
+                                'Jadwal Posyandu',
+                                style: TextStyle(
+                                  fontSize: 18.0,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.white,
+                                ),
+                              ),
+                              Spacer(),
+                              Icon(Icons.location_on, color: Colors.white),
+                            ],
+                          ),
+                          SizedBox(height: 8.0),
+                          Text(
+                            'Bulan suar 1 dan 2',
+                            style: TextStyle(
+                              fontSize: 16.0,
+                              color: Colors.white,
+                            ),
+                          ),
+                          SizedBox(height: 14.0),
+                          Container(
+                            padding: EdgeInsets.all(9.0),
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(10.0),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.black12,
+                                  blurRadius: 5.0,
+                                  offset: Offset(0, 2),
+                                ),
+                              ],
+                            ),
+                            child: Row(
+                              children: [
+                                Icon(
+                                  Icons.access_time,
+                                  color: Colors.pink[100],
+                                  size: 18,
+                                ),
+                                Text(
+                                  '${jadwal.tanggal} 09.00 - 12.00',
+                                  style: TextStyle(
+                                    fontSize: 12.8,
+                                    color: Colors.pink[100],
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
                     );
                   }).toList(),
+                ),
+                SizedBox(height: 20),
+                Container(
+                  width: 350,
+                  height: 145, // Set lebar sesuai keinginan
+                  padding: EdgeInsets.all(16.0),
+                  decoration: BoxDecoration(
+                    color: Colors.blue[200],
+                    borderRadius: BorderRadius.circular(10),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black26,
+                        blurRadius: 10.0,
+                        offset: Offset(0, 5),
+                      ),
+                    ],
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Usia Anak',
+                        style: TextStyle(
+                          fontSize: 16.0,
+                          color: Colors.black,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      SizedBox(height: 8.0),
+                      Row(
+                        children: [
+                          Text(
+                            '20',
+                            style: TextStyle(
+                              fontSize: 48.0,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.black,
+                            ),
+                          ),
+                          SizedBox(width: 8.0),
+                          Text(
+                            'Tahun',
+                            style: TextStyle(
+                              fontSize: 16.0,
+                              color: Colors.black,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
                 ),
                 SizedBox(height: 20),
                 // Child's Details
