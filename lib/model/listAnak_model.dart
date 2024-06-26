@@ -1,13 +1,15 @@
-class Anak {
-  final int id;
-  final int userId;
-  final String name;
-  final String umur;
-  final String jenisKelamin;
-  final DateTime createdAt;
-  final DateTime updatedAt;
+// listAnak_model.dart
 
-  Anak({
+class ChildModel {
+  final int id;
+  final String userId;
+  final String name;
+  final int umur;
+  final String jenisKelamin;
+  final String createdAt;
+  final String updatedAt;
+
+  ChildModel({
     required this.id,
     required this.userId,
     required this.name,
@@ -17,15 +19,15 @@ class Anak {
     required this.updatedAt,
   });
 
-  factory Anak.fromJson(Map<String, dynamic> json) {
-    return Anak(
+  factory ChildModel.fromJson(Map<String, dynamic> json) {
+    return ChildModel(
       id: json['id'],
       userId: json['user_id'],
       name: json['name'],
-      umur: json['umur'],
+      umur: int.parse(json['umur']),
       jenisKelamin: json['jenis_kelamin'],
-      createdAt: DateTime.parse(json['created_at']),
-      updatedAt: DateTime.parse(json['updated_at']),
+      createdAt: json['created_at'],
+      updatedAt: json['updated_at'],
     );
   }
 }

@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:posyandu/controller/jadwal_controller.dart';
 import 'package:posyandu/controller/listAnak_controller.dart';
 import 'package:posyandu/layout/footerbar.dart';
+import 'package:posyandu/model/jadwal_model.dart';
 import 'package:posyandu/model/listAnak_model.dart';
 import 'package:posyandu/model/login_model.dart';
 
@@ -16,8 +18,9 @@ class DashboardScreen extends StatefulWidget {
 
 class _DashboardScreenState extends State<DashboardScreen> {
   int _selectedIndex = 0;
-  String selectedReport = 'Pilih Anak';
-  List<Anak> anakList = [];
+  String selectedReport = 'Pilih Anak'; // Initial value for dropdown
+  List<ChildModel> children = [];
+  List<JadwalModel> jadwals = [];
 
   void _onTabTapped(int index) {
     setState(() {
@@ -28,18 +31,32 @@ class _DashboardScreenState extends State<DashboardScreen> {
   @override
   void initState() {
     super.initState();
-    fetchAnakList();
+    fetchData();
+    fetchDataJ();
   }
 
-  void fetchAnakList() async {
-    ListAnakController controller = ListAnakController();
+  void fetchDataJ() async {
     try {
-      List<Anak> fetchedList = await controller.fetchAnak(17);
+      JadwalController controller = JadwalController();
+      List<JadwalModel> fetchedJadwals = await controller.fetchJadwal();
       setState(() {
-        anakList = fetchedList;
+        jadwals = fetchedJadwals;
       });
     } catch (e) {
-      print("Failed to load children: $e");
+      print('Error fetching jadwal: $e');
+    }
+  }
+
+  void fetchData() async {
+    try {
+      ListAnakController controller = ListAnakController();
+      List<ChildModel> fetchedChildren = await controller.fetchChildren(
+          '${widget.user.id}'); // Replace '17' with actual user id
+      setState(() {
+        children = fetchedChildren;
+      });
+    } catch (e) {
+      print('Error fetching children: $e');
     }
   }
 
@@ -60,7 +77,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text("Posyandu Lonto Engal",
+                        Text("Posyandu Bulan suar 1 dan 2",
                             style: TextStyle(
                                 fontSize: 16, fontWeight: FontWeight.bold)),
                         Text('Hi, Bun ${widget.user.name}',
@@ -110,11 +127,10 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     fillColor: Colors.transparent, // Latar belakang transparan
                   ),
                   isExpanded: true,
-                  items: <String>[
+                  items: [
                     'Pilih Anak',
-                    'Rapor Anak 1',
-                    'Rapor Anak 2',
-                    'Rapor Anak 3'
+                    for (var child in children)
+                      '${child.name}' // Customize this as per your requirement
                   ].map<DropdownMenuItem<String>>((String value) {
                     return DropdownMenuItem<String>(
                       value: value,
@@ -142,8 +158,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     autoPlay: false,
                     enlargeCenterPage: true,
                   ),
-                  items: [
-                    Container(
+                  items: jadwals.map((jadwal) {
+                    return Container(
                       width: double.infinity,
                       margin: EdgeInsets.symmetric(horizontal: 5.0),
                       decoration: BoxDecoration(
@@ -152,24 +168,11 @@ class _DashboardScreenState extends State<DashboardScreen> {
                       ),
                       child: Center(
                           child: Text(
-                              "Jadwal Posyandu Semu Raya\nMinggu, 15 Januari 09.00 - 12.00",
+                              "Jadwal Posyandu Semu Raya\n${jadwal.tanggal} 09.00 - 12.00",
                               textAlign: TextAlign.center,
                               style: TextStyle(color: Colors.white))),
-                    ),
-                    Container(
-                      width: double.infinity,
-                      margin: EdgeInsets.symmetric(horizontal: 5.0),
-                      decoration: BoxDecoration(
-                        color: Colors.pinkAccent,
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      child: Center(
-                          child: Text(
-                              "Jadwal Posyandu Lonto Engal\nSenin, 17 Januari 09.00 - 12.00",
-                              textAlign: TextAlign.center,
-                              style: TextStyle(color: Colors.white))),
-                    ),
-                  ],
+                    );
+                  }).toList(),
                 ),
                 SizedBox(height: 20),
                 // Child's Details
