@@ -168,7 +168,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                       ),
                       child: Center(
                           child: Text(
-                              "Jadwal Posyandu Semu Raya\n${jadwal.tanggal} 09.00 - 12.00",
+                              "Jadwal Posyandu Bulan \nsuar 1 dan 2\n${jadwal.tanggal} 09.00 - 12.00",
                               textAlign: TextAlign.center,
                               style: TextStyle(color: Colors.white))),
                     );
