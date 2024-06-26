@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:posyandu/page/dashboard_page.dart';
 
 class LoginScreen extends StatefulWidget {
   @override
@@ -57,7 +58,10 @@ class _LoginScreenState extends State<LoginScreen> {
               // Login Button
               ElevatedButton(
                 onPressed: () {
-                  // Add login logic here
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => DashboardScreen()),
+                  ); // Add login logic here
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Color(0xFFFFA4B6),
@@ -69,9 +73,10 @@ class _LoginScreenState extends State<LoginScreen> {
                 child: Text(
                   'Login',
                   style: GoogleFonts.cabin(
-                      fontWeight: FontWeight.w500,
-                      fontSize: 24,
-                      color: Color(0xFFFFFFFF)),
+                    fontWeight: FontWeight.w500,
+                    fontSize: 24,
+                    color: Color(0xFFFFFFFF),
+                  ),
                 ),
               ),
               SizedBox(height: 20),
